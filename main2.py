@@ -10,7 +10,6 @@ BOT_USERNAME: Final = "@FallDetectionMonitorBot"
 
 # OpenAI API Key
 OPENAI_API_KEY: Final = ""
-# OPENAI_API_KEY: Final = "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"
 
 # Initialize the OpenAI API client
 openai.api_key = OPENAI_API_KEY
