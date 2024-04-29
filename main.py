@@ -3,7 +3,7 @@ from typing import Final
 from telegram import Update
 from telegram.ext import CommandHandler, MessageHandler, Application, filters, ContextTypes
 
-TOKEN: Final = ""
+TOKEN: Final = "6652548059:AAHMjQxSifta_RDNP99XZe3TxOHOFh0gGwA"
 BOT_USERNAME: Final = "@FallDetectionMonitorBot"
 
 # Membuat variabel untuk menyimpan daftar pengguna yang berlangganan
