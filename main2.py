@@ -5,7 +5,7 @@ from telegram.ext import CommandHandler, MessageHandler, Application, filters, C
 import openai
 
 # Telegram Bot Token
-TOKEN: Final = "6652548059:AAHMjQxSifta_RDNP99XZe3TxOHOFh0gGwA"
+TOKEN: Final = ""
 BOT_USERNAME: Final = "@FallDetectionMonitorBot"
 
 # OpenAI API Key
