@@ -5,11 +5,12 @@ from telegram.ext import CommandHandler, MessageHandler, Application, filters, C
 import openai
 
 # Telegram Bot Token
-TOKEN: Final = ""
+TOKEN: Final = "6652548059:AAHMjQxSifta_RDNP99XZe3TxOHOFh0gGwA"
 BOT_USERNAME: Final = "@FallDetectionMonitorBot"
 
 # OpenAI API Key
-OPENAI_API_KEY: Final = ""
+OPENAI_API_KEY: Final = "sk-TEu08YsdHE0zazkTqMWmT3B1bkFJceXKiaoW3XAeUQz1FT9U"
+# OPENAI_API_KEY: Final = "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"
 
 # Initialize the OpenAI API client
 openai.api_key = OPENAI_API_KEY
