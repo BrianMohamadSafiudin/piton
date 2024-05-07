@@ -33,13 +33,16 @@ def on_message(client, userdata, msg):
     global data_count
     print("Message received-> " + msg.topic + " " + str(msg.payload))
     data_str = msg.payload.decode('utf-8')
-    data_values = [float(i) for i in data_str.split(',')]
+    data_parts = data_str.split(',')
+    device_id = data_parts[0]
+    data_values = [float(i) for i in data_parts[1:]]
     timestamp = datetime.now().isoformat()
 
-    # Buat dictionary data dengan timestamp
+    # Buat dictionary data dengan timestamp dan device ID
     data_entry = {
         "timestamp": timestamp,
-        msg.topic.split('/')[-1]: data_values
+        "device_id": device_id,
+        msg.topic.split('/')[-1]: {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
     }
     sensor_data_buffer.append(data_entry)
     data_count += 1
@@ -48,7 +51,7 @@ def on_message(client, userdata, msg):
     if data_count >= 100:
         existing_data = load_data()
         updated_data = existing_data + sensor_data_buffer
-        with open('sensor_data.json', 'w') as json_file:
+        with open('sensordata.json', 'w') as json_file:
             json.dump(updated_data, json_file, indent=4)
         sensor_data_buffer.clear()
         data_count = 0
