@@ -72,7 +72,7 @@ def on_message(client, userdata, msg):
     if data_count >= 100:
         existing_data = load_data()
         updated_data = existing_data + sensor_data_buffer
-        with open('sensor_data.json', 'w') as json_file:
+        with open('sensordata.json', 'w') as json_file:
             json.dump(updated_data, json_file, indent=4)
         sensor_data_buffer.clear()
         data_count = 0
