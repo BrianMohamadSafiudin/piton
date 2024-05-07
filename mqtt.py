@@ -35,23 +35,30 @@ def on_message(client, userdata, msg):
     data_str = msg.payload.decode('utf-8')
     data_parts = data_str.split(',')
     device_id = data_parts[0]
-    data_values = [float(i) for i in data_parts[1:]]
+    
+    try:
+        data_values = [float(i) for i in data_parts[1:]]  # Convert the rest of the parts to float
+    except ValueError as e:
+        print(f"Error converting data to float. Data received: {data_parts[1:]}")
+        return  # Early exit if data conversion fails
+    
     timestamp = datetime.now().isoformat()
 
-    # Buat dictionary data dengan timestamp dan device ID
+    # Create a dictionary entry with timestamp, device_id, and sensor data
+    sensor_type = msg.topic.split('/')[-1]
     data_entry = {
         "timestamp": timestamp,
         "device_id": device_id,
-        msg.topic.split('/')[-1]: {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
+        sensor_type: {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
     }
     sensor_data_buffer.append(data_entry)
     data_count += 1
 
-    # Jika sudah menerima 100 data, simpan ke file dan reset buffer
+    # Save to JSON file every 100 messages
     if data_count >= 100:
         existing_data = load_data()
         updated_data = existing_data + sensor_data_buffer
-        with open('sensordata.json', 'w') as json_file:
+        with open('sensor_data.json', 'w') as json_file:
             json.dump(updated_data, json_file, indent=4)
         sensor_data_buffer.clear()
         data_count = 0
