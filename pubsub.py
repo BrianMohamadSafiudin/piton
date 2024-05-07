@@ -1,22 +1,26 @@
 import json
 import os
 import paho.mqtt.client as mqtt
+from datetime import datetime
 
 # Konfigurasi broker MQTT
 broker_address = "34.128.88.34"
 port = 1883
 topics = ["esp/mpu6050/acceleration", "esp/mpu6050/gyroscope", "esp/mpu6050/temperature"]
 
+# Membuat atau membuka file data
+if not os.path.exists('sensor_data.json'):
+    with open('sensor_data.json', 'w') as file:
+        json.dump([], file)  # Inisialisasi file sebagai array JSON
+
 # Fungsi untuk memuat data dari file JSON
 def load_data():
-    if os.path.exists('sensor_data.json'):
-        with open('sensor_data.json', 'r') as json_file:
-            return json.load(json_file)
-    else:
-        return {"gyro": None, "acceleration": None, "temperature": None}
+    with open('sensor_data.json', 'r') as json_file:
+        return json.load(json_file)
 
-# Data sensor global
-sensor_data = load_data()
+# Buffer data sensor dan counter
+sensor_data_buffer = []
+data_count = 0
 
 # Fungsi callback yang dipanggil ketika klien menerima pesan CONNACK dari server
 def on_connect(client, userdata, flags, rc):
@@ -26,21 +30,38 @@ def on_connect(client, userdata, flags, rc):
 
 # Fungsi callback yang dipanggil ketika pesan diterima dari server
 def on_message(client, userdata, msg):
+    global data_count
     print("Message received-> " + msg.topic + " " + str(msg.payload))
     data_str = msg.payload.decode('utf-8')
-    data_values = [float(i) for i in data_str.split(',')]
+    data_parts = data_str.split(',')
+    device_id = data_parts[0]
+    
+    try:
+        data_values = [float(i) for i in data_parts[1:]]  # Convert the rest of the parts to float
+    except ValueError as e:
+        print(f"Error converting data to float. Data received: {data_parts[1:]}")
+        return  # Early exit if data conversion fails
+    
+    timestamp = datetime.now().isoformat()
 
-    # Update data tergantung pada topik
-    if msg.topic == "esp/mpu6050/acceleration":
-        sensor_data['acceleration'] = {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
-    elif msg.topic == "esp/mpu6050/gyroscope":
-        sensor_data['gyro'] = {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
-    elif msg.topic == "esp/mpu6050/temperature":
-        sensor_data['temperature'] = data_values[0]
+    # Create a dictionary entry with timestamp, device_id, and sensor data
+    sensor_type = msg.topic.split('/')[-1]
+    data_entry = {
+        "timestamp": timestamp,
+        "device_id": device_id,
+        sensor_type: {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
+    }
+    sensor_data_buffer.append(data_entry)
+    data_count += 1
 
-    # Simpan data yang diperbarui ke file JSON
-    with open('sensordata.json', 'w') as json_file:
-        json.dump(sensor_data, json_file, indent=4)
+    # Save to JSON file every 100 messages
+    if data_count >= 100:
+        existing_data = load_data()
+        updated_data = existing_data + sensor_data_buffer
+        with open('sensor_data.json', 'w') as json_file:
+            json.dump(updated_data, json_file, indent=4)
+        sensor_data_buffer.clear()
+        data_count = 0
 
 # Membuat objek klien MQTT
 client = mqtt.Client()
