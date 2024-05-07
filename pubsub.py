@@ -43,14 +43,28 @@ def on_message(client, userdata, msg):
         return  # Early exit if data conversion fails
     
     timestamp = datetime.now().isoformat()
-
-    # Create a dictionary entry with timestamp, device_id, and sensor data
     sensor_type = msg.topic.split('/')[-1]
+
+    # Create dictionary based on sensor type
     data_entry = {
         "timestamp": timestamp,
-        "device_id": device_id,
-        sensor_type: {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
+        "device_id": device_id
     }
+    
+    # Add sensor-specific data
+    if sensor_type == "acceleration" or sensor_type == "gyroscope":
+        if len(data_values) == 3:
+            data_entry[sensor_type] = {"x": data_values[0], "y": data_values[1], "z": data_values[2]}
+        else:
+            print(f"Insufficient data for {sensor_type}. Expected 3 values, got {len(data_values)}")
+            return
+    elif sensor_type == "temperature":
+        if len(data_values) == 1:
+            data_entry[sensor_type] = data_values[0]
+        else:
+            print(f"Unexpected data count for temperature. Expected 1 value, got {len(data_values)}")
+            return
+    
     sensor_data_buffer.append(data_entry)
     data_count += 1
 
