@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 
 # Konfigurasi broker MQTT
-broker_address = "34.128.88.34"
+broker_address = "34.101.62.111"
 port = 1883
 topics = ["esp/mpu6050/acceleration", "esp/mpu6050/gyroscope", "esp/mpu6050/temperature"]
 
