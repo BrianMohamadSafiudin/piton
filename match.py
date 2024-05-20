@@ -32,26 +32,27 @@ class_labels = [
 
 def predict_and_save():
     # Muat data JSON dari file
-    with open('resampled_sensordata.json', 'r') as f:
+    with open('sensordata.json', 'r') as f:
         data_json = f.read()
 
     # Proses JSON untuk mendapatkan data gyroscope
     gyro_data = process_json(data_json)
 
-    # Pastikan data memiliki panjang yang sesuai dengan padding atau trimming
+    # Pastikan hanya melakukan prediksi jika ada tepat 600 objek
     n_timesteps = 600
     n_features = 3  # gyroscope x, y, z
 
     if gyro_data.shape[0] < n_timesteps:
-        # Padding dengan nilai nol jika data kurang dari 600 titik
-        padding = np.zeros((n_timesteps - gyro_data.shape[0], n_features))
-        gyro_data = np.vstack((gyro_data, padding))
+        print(f'Data tidak cukup: hanya {gyro_data.shape[0]} objek, menunggu sampai ada 600 objek.')
+        return
     elif gyro_data.shape[0] > n_timesteps:
         # Trim data jika lebih dari 600 titik
         gyro_data = gyro_data[:n_timesteps, :]
 
+    # Pertukarkan sumbu untuk menyesuaikan dengan bentuk input model (3, 600)
+    gyro_data = np.swapaxes(gyro_data, 0, 1)
+
     # Ubah bentuk input sesuai dengan yang diharapkan oleh model
-    # Model mengharapkan bentuk (None, 3, 600, 1)
     gyro_data_reshaped = gyro_data.reshape(1, n_features, n_timesteps, 1)
 
     prediction = model.predict(gyro_data_reshaped)
@@ -65,10 +66,10 @@ def predict_and_save():
         json.dump({'prediction': status}, outfile)
 
     print(f'Hasil Prediksi: {status}')
+    print(gyro_data_reshaped)
     print(prediction)
     print(prediction.shape)
-
-
+    
 # Jalankan kode setiap 6 detik
 while True:
     predict_and_save()
