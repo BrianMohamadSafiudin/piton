@@ -18,7 +18,7 @@ def process_json(data_json):
     return gyro_data
 
 # Muat model AI yang telah dilatih menggunakan Keras tanpa optimizer
-model_path = 'fall-detection-model.h5'
+model_path = 'fall-detect-model.h5'
 model = load_model(model_path, compile=False)
 
 # Label kelas sesuai dengan model
@@ -66,7 +66,6 @@ def predict_and_save():
         json.dump({'prediction': status}, outfile)
 
     print(f'Hasil Prediksi: {status}')
-    print(gyro_data_reshaped)
     print(prediction)
     print(prediction.shape)
     
