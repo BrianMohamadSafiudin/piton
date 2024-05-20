@@ -17,9 +17,9 @@ def process_json(data_json):
     gyro_data = np.array([gyro_x, gyro_y, gyro_z]).T
     return gyro_data
 
-# Muat model AI yang telah dilatih menggunakan Keras
+# Muat model AI yang telah dilatih menggunakan Keras tanpa optimizer
 model_path = 'fall-detection-model.h5'
-model = load_model(model_path)
+model = load_model(model_path, compile=False)
 
 # Label kelas sesuai dengan model
 class_labels = [
@@ -50,8 +50,10 @@ def predict_and_save():
         # Trim data jika lebih dari 600 titik
         gyro_data = gyro_data[:n_timesteps, :]
 
-    # Buat prediksi menggunakan model
-    gyro_data_reshaped = gyro_data.reshape(1, n_timesteps, n_features)
+    # Ubah bentuk input sesuai dengan yang diharapkan oleh model
+    # Model mengharapkan bentuk (None, 3, 600, 1)
+    gyro_data_reshaped = gyro_data.reshape(1, n_features, n_timesteps, 1)
+
     prediction = model.predict(gyro_data_reshaped)
 
     # Tentukan kelas dengan probabilitas tertinggi
