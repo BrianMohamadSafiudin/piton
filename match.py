@@ -1,6 +1,4 @@
 import os
-os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
-
 import json
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -12,13 +10,16 @@ def process_json(data_json):
     gyro_x = [float(item["gyroscope.x"]) for item in data]
     gyro_y = [float(item["gyroscope.y"]) for item in data]
     gyro_z = [float(item["gyroscope.z"]) for item in data]
+    accel_x = [float(item["acceleration.x"]) for item in data]
+    accel_y = [float(item["acceleration.y"]) for item in data]
+    accel_z = [float(item["acceleration.z"]) for item in data]
     
-    # Gabungkan data gyroscope menjadi satu array
-    gyro_data = np.array([gyro_x, gyro_y, gyro_z]).T
-    return gyro_data
+    # Gabungkan data gyroscope dan accelerometer menjadi satu array
+    combined_data = np.array([gyro_x, gyro_y, gyro_z, accel_x, accel_y, accel_z]).T
+    return combined_data
 
 # Muat model AI yang telah dilatih menggunakan Keras tanpa optimizer
-model_path = 'fall-detect-model.h5'
+model_path = 'fall-detection.h5'
 model = load_model(model_path, compile=False)
 
 # Label kelas sesuai dengan model
@@ -35,27 +36,27 @@ def predict_and_save():
     with open('sensordata.json', 'r') as f:
         data_json = f.read()
 
-    # Proses JSON untuk mendapatkan data gyroscope
-    gyro_data = process_json(data_json)
+    # Proses JSON untuk mendapatkan data gyroscope dan accelerometer
+    sensor_data = process_json(data_json)
 
     # Pastikan hanya melakukan prediksi jika ada tepat 600 objek
     n_timesteps = 600
-    n_features = 3  # gyroscope x, y, z
+    n_features = 6  # gyroscope x, y, z dan acceleration x, y, z
 
-    if gyro_data.shape[0] < n_timesteps:
-        print(f'Data tidak cukup: hanya {gyro_data.shape[0]} objek, menunggu sampai ada 600 objek.')
+    if sensor_data.shape[0] < n_timesteps:
+        print(f'Data tidak cukup: hanya {sensor_data.shape[0]} objek, menunggu sampai ada 600 objek.')
         return
-    elif gyro_data.shape[0] > n_timesteps:
+    elif sensor_data.shape[0] > n_timesteps:
         # Trim data jika lebih dari 600 titik
-        gyro_data = gyro_data[:n_timesteps, :]
+        sensor_data = sensor_data[:n_timesteps, :]
 
-    # Pertukarkan sumbu untuk menyesuaikan dengan bentuk input model (3, 600)
-    gyro_data = np.swapaxes(gyro_data, 0, 1)
+    # Pertukarkan sumbu untuk menyesuaikan dengan bentuk input model (6, 600)
+    sensor_data = np.swapaxes(sensor_data, 0, 1)
 
     # Ubah bentuk input sesuai dengan yang diharapkan oleh model
-    gyro_data_reshaped = gyro_data.reshape(1, n_features, n_timesteps, 1)
+    sensor_data_reshaped = sensor_data.reshape(1, n_features, n_timesteps, 1)
 
-    prediction = model.predict(gyro_data_reshaped)
+    prediction = model.predict(sensor_data_reshaped)
 
     # Tentukan kelas dengan probabilitas tertinggi
     predicted_class = np.argmax(prediction)
