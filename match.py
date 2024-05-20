@@ -65,6 +65,9 @@ def predict_and_save():
         json.dump({'prediction': status}, outfile)
 
     print(f'Hasil Prediksi: {status}')
+    print(prediction)
+    print(prediction.shape)
+
 
 # Jalankan kode setiap 6 detik
 while True:
