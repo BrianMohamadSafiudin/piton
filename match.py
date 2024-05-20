@@ -1,3 +1,6 @@
+import os
+os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
+
 import json
 import numpy as np
 from tensorflow.keras.models import load_model
