@@ -1,61 +1,61 @@
 import json
-import pandas as pd
-import time
+from datetime import datetime, timedelta
 
-def resample_data(data, freq='10ms'):
-    # Convert JSON data to DataFrame
-    df = pd.json_normalize(data)
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
-    df.set_index('timestamp', inplace=True)
+# Fungsi untuk melakukan interpolasi data antara dua titik data
+def interpolate_data(data1, data2, num_points):
+    interpolated_data = []
+    
+    # Konversi timestamp ke objek datetime
+    ts1 = datetime.fromisoformat(data1["timestamp"])
+    ts2 = datetime.fromisoformat(data2["timestamp"])
+    
+    # Hitung langkah waktu (delta)
+    delta = (ts2 - ts1) / (num_points + 1)
+    
+    # Interpolasi titik data
+    for i in range(1, num_points + 1):
+        timestamp = (ts1 + i * delta).isoformat()
+        interpolated_point = {
+            "timestamp": timestamp,
+            "device_id": data1["device_id"],
+            "acceleration.x": linear_interpolate(data1["acceleration.x"], data2["acceleration.x"], num_points + 1, i),
+            "acceleration.y": linear_interpolate(data1["acceleration.y"], data2["acceleration.y"], num_points + 1, i),
+            "acceleration.z": linear_interpolate(data1["acceleration.z"], data2["acceleration.z"], num_points + 1, i),
+            "gyroscope.x": linear_interpolate(data1["gyroscope.x"], data2["gyroscope.x"], num_points + 1, i),
+            "gyroscope.y": linear_interpolate(data1["gyroscope.y"], data2["gyroscope.y"], num_points + 1, i),
+            "gyroscope.z": linear_interpolate(data1["gyroscope.z"], data2["gyroscope.z"], num_points + 1, i),
+            "temperature": linear_interpolate(data1["temperature"], data2["temperature"], num_points + 1, i),
+        }
+        interpolated_data.append(interpolated_point)
+    
+    return interpolated_data
 
-    # Generate a date range with the desired frequency
-    time_index = pd.date_range(start=df.index.min(), end=df.index.max(), freq=freq)
+# Fungsi interpolasi linear
+def linear_interpolate(start, end, steps, current_step):
+    return start + (end - start) * current_step / steps
 
-    # Reindex the dataframe to the new time_index and interpolate missing values
-    df = df.infer_objects()
-    df_resampled = df.reindex(time_index).interpolate(method='linear')
+# Baca data dari sensordata.json
+with open('sensordata.json', 'r') as f:
+    sensor_data = json.load(f)
 
-    # Fill missing device_id with the previous value
-    df_resampled['device_id'] = df_resampled['device_id'].fillna(method='ffill')
+# Inisialisasi data hasil resampling
+resampled_data = []
 
-    # Round the values according to the specified precision
-    if 'temperature' in df_resampled.columns:
-        df_resampled['temperature'] = df_resampled['temperature'].apply(lambda x: format(x, '.2f'))
-    for column in df_resampled.columns:
-        if 'acceleration' in column and df_resampled[column].dtype == 'float64':
-            df_resampled[column] = df_resampled[column].apply(lambda x: format(x, '.3f'))
-        elif 'gyroscope' in column and df_resampled[column].dtype == 'float64':
-            df_resampled[column] = df_resampled[column].apply(lambda x: format(x, '.7f'))
+# Jumlah interpolasi antara dua titik data
+num_interpolations = 29
 
-    # Reset index to make timestamp a column again
-    df_resampled.reset_index(inplace=True)
-    df_resampled.rename(columns={'index': 'timestamp'}, inplace=True)
+# Lakukan interpolasi untuk setiap pasangan titik data berurutan
+for i in range(len(sensor_data) - 1):
+    resampled_data.append(sensor_data[i])  # Tambahkan titik data asli
+    
+    # Interpolasi antara titik data saat ini dan titik data berikutnya
+    interpolated = interpolate_data(sensor_data[i], sensor_data[i + 1], num_interpolations)
+    resampled_data.extend(interpolated)
 
-    # Convert timestamp to string to make it JSON serializable
-    df_resampled['timestamp'] = df_resampled['timestamp'].astype(str)
+resampled_data.append(sensor_data[-1])  # Tambahkan titik data terakhir
 
-    # Convert DataFrame back to JSON
-    resampled_data = df_resampled.to_dict(orient='records')
-    return resampled_data
+# Simpan data hasil resampling ke resample_sensordata.json
+with open('resampled_sensordata.json', 'w') as f:
+    json.dump(resampled_data, f, indent=4)
 
-def main():
-    input_file = 'sensordata.json'
-    output_file = 'resampled_sensordata.json'
-
-    while True:
-        # Read the sensor data file
-        with open(input_file, 'r') as file:
-            data = json.load(file)
-
-        # Resample the data
-        resampled_data = resample_data(data)
-
-        # Write the resampled data to a new file
-        with open(output_file, 'w') as file:
-            json.dump(resampled_data, file, indent=4)
-
-        # Wait for 6 seconds before the next iteration
-        time.sleep(6)
-
-if __name__ == "__main__":
-    main()
+print("Data telah diresample dan disimpan di resample_sensordata.json.")
