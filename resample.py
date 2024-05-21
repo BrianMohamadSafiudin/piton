@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime, timedelta
 
 # Fungsi untuk melakukan interpolasi data antara dua titik data
@@ -34,28 +35,35 @@ def interpolate_data(data1, data2, num_points):
 def linear_interpolate(start, end, steps, current_step):
     return start + (end - start) * current_step / steps
 
-# Baca data dari sensordata.json
-with open('sensordata.json', 'r') as f:
-    sensor_data = json.load(f)
+# Fungsi untuk melakukan resampling dan menyimpan data
+def perform_resampling():
+    # Baca data dari sensordata.json
+    with open('sensordata.json', 'r') as f:
+        sensor_data = json.load(f)
 
-# Inisialisasi data hasil resampling
-resampled_data = []
+    # Inisialisasi data hasil resampling
+    resampled_data = []
 
-# Jumlah interpolasi antara dua titik data
-num_interpolations = 29
+    # Jumlah interpolasi antara dua titik data
+    num_interpolations = 29
 
-# Lakukan interpolasi untuk setiap pasangan titik data berurutan
-for i in range(len(sensor_data) - 1):
-    resampled_data.append(sensor_data[i])  # Tambahkan titik data asli
-    
-    # Interpolasi antara titik data saat ini dan titik data berikutnya
-    interpolated = interpolate_data(sensor_data[i], sensor_data[i + 1], num_interpolations)
-    resampled_data.extend(interpolated)
+    # Lakukan interpolasi untuk setiap pasangan titik data berurutan
+    for i in range(len(sensor_data) - 1):
+        resampled_data.append(sensor_data[i])  # Tambahkan titik data asli
 
-resampled_data.append(sensor_data[-1])  # Tambahkan titik data terakhir
+        # Interpolasi antara titik data saat ini dan titik data berikutnya
+        interpolated = interpolate_data(sensor_data[i], sensor_data[i + 1], num_interpolations)
+        resampled_data.extend(interpolated)
 
-# Simpan data hasil resampling ke resample_sensordata.json
-with open('resampled_sensordata.json', 'w') as f:
-    json.dump(resampled_data, f, indent=4)
+    resampled_data.append(sensor_data[-1])  # Tambahkan titik data terakhir
 
-print("Data telah diresample dan disimpan di resample_sensordata.json.")
+    # Simpan data hasil resampling ke resample_sensordata.json
+    with open('resampled_sensordata.json', 'w') as f:
+        json.dump(resampled_data, f, indent=4)
+
+    print("Data telah diresample dan disimpan di resample_sensordata.json.")
+
+# Jalankan fungsi perform_resampling() setiap 5 detik
+while True:
+    perform_resampling()
+    time.sleep(5)

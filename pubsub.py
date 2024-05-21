@@ -60,7 +60,7 @@ def on_message(client, userdata, msg):
     sensordata.append(sensor_entry)
 
     # Overwrite the file every 30 objects
-    if len(sensordata) >= 600:
+    if len(sensordata) >= 30:
         with open('sensordata.json', 'w') as json_file:
             json.dump(sensordata, json_file, indent=4)
         sensordata.clear()

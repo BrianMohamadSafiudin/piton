@@ -33,7 +33,7 @@ class_labels = [
 
 def predict_and_save():
     # Muat data JSON dari file
-    with open('sensordata.json', 'r') as f:
+    with open('resampled_sensordata.json', 'r') as f:
         data_json = f.read()
 
     # Proses JSON untuk mendapatkan data gyroscope dan accelerometer
@@ -73,4 +73,4 @@ def predict_and_save():
 # Jalankan kode setiap 6 detik
 while True:
     predict_and_save()
-    time.sleep(6)
+    time.sleep(5)
