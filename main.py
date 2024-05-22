@@ -12,7 +12,7 @@ subscribers = set()
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Halo! Saya bot dari alat deteksi jatuh!')
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Ada yang bisa saya bantu?')
 
 async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     # Tambahkan handler command
     app.add_handler(CommandHandler("start", start_command))
-    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("status", status_command))
     app.add_handler(CommandHandler("subscribe", subscribe_command))
     app.add_handler(CommandHandler("unsubscribe", unsubscribe_command))
     

@@ -70,7 +70,7 @@ def predict_and_save():
     print(prediction)
     print(prediction.shape)
     
-# Jalankan kode setiap 6 detik
+# Jalankan kode setiap 1 detik
 while True:
     predict_and_save()
-    time.sleep(5)
+    time.sleep(1)

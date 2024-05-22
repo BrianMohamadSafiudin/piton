@@ -19,13 +19,13 @@ def interpolate_data(data1, data2, num_points):
         interpolated_point = {
             "timestamp": timestamp,
             "device_id": data1["device_id"],
-            "acceleration.x": linear_interpolate(data1["acceleration.x"], data2["acceleration.x"], num_points + 1, i),
-            "acceleration.y": linear_interpolate(data1["acceleration.y"], data2["acceleration.y"], num_points + 1, i),
-            "acceleration.z": linear_interpolate(data1["acceleration.z"], data2["acceleration.z"], num_points + 1, i),
-            "gyroscope.x": linear_interpolate(data1["gyroscope.x"], data2["gyroscope.x"], num_points + 1, i),
-            "gyroscope.y": linear_interpolate(data1["gyroscope.y"], data2["gyroscope.y"], num_points + 1, i),
-            "gyroscope.z": linear_interpolate(data1["gyroscope.z"], data2["gyroscope.z"], num_points + 1, i),
-            "temperature": linear_interpolate(data1["temperature"], data2["temperature"], num_points + 1, i),
+            "acceleration.x": round(linear_interpolate(data1["acceleration.x"], data2["acceleration.x"], num_points + 1, i), 3),
+            "acceleration.y": round(linear_interpolate(data1["acceleration.y"], data2["acceleration.y"], num_points + 1, i), 3),
+            "acceleration.z": round(linear_interpolate(data1["acceleration.z"], data2["acceleration.z"], num_points + 1, i), 3),
+            "gyroscope.x": round(linear_interpolate(data1["gyroscope.x"], data2["gyroscope.x"], num_points + 1, i), 7),
+            "gyroscope.y": round(linear_interpolate(data1["gyroscope.y"], data2["gyroscope.y"], num_points + 1, i), 7),
+            "gyroscope.z": round(linear_interpolate(data1["gyroscope.z"], data2["gyroscope.z"], num_points + 1, i), 7),
+            "temperature": round(linear_interpolate(data1["temperature"], data2["temperature"], num_points + 1, i), 2),
         }
         interpolated_data.append(interpolated_point)
     
@@ -63,7 +63,7 @@ def perform_resampling():
 
     print("Data telah diresample dan disimpan di resample_sensordata.json.")
 
-# Jalankan fungsi perform_resampling() setiap 5 detik
+# Jalankan fungsi perform_resampling()
 while True:
     perform_resampling()
-    time.sleep(5)
+    time.sleep(0.1)

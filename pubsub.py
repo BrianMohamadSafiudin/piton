@@ -57,13 +57,16 @@ def on_message(client, userdata, msg):
         "temperature": temp_value
     }
 
+    # Append the new sensor entry
     sensordata.append(sensor_entry)
 
-    # Overwrite the file every 30 objects
-    if len(sensordata) >= 30:
-        with open('sensordata.json', 'w') as json_file:
-            json.dump(sensordata, json_file, indent=4)
-        sensordata.clear()
+    # Maintain only the last 30 entries
+    if len(sensordata) > 30:
+        sensordata.pop(0)
+
+    # Overwrite the JSON file with the updated sensor data
+    with open('sensordata.json', 'w') as json_file:
+        json.dump(sensordata, json_file, indent=4)
 
 # Setup MQTT client
 client = mqtt.Client()
