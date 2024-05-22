@@ -66,4 +66,4 @@ def perform_resampling():
 # Jalankan fungsi perform_resampling()
 while True:
     perform_resampling()
-    time.sleep(1)
+    time.sleep(0.5)

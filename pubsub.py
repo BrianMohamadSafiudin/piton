@@ -37,36 +37,44 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Message received-> " + msg.topic + " " + str(msg.payload))
-    data_str = msg.payload.decode('utf-2')
-    data_parts = data_str.split(',')
-    device_id = data_parts[0]
-    timestamp = datetime.now().isoformat()
-    accel_values = [float(i) for i in data_parts[1:4]]
-    gyro_values = [float(i) for i in data_parts[4:7]]
-    temp_value = float(data_parts[7])
+    try:
+        data_str = msg.payload.decode('utf-8')
+        data_parts = data_str.split(',')
 
-    sensor_entry = {
-        "timestamp": timestamp,
-        "device_id": device_id,
-        "acceleration.x": accel_values[0],
-        "acceleration.y": accel_values[1],
-        "acceleration.z": accel_values[2],
-        "gyroscope.x": gyro_values[0],
-        "gyroscope.y": gyro_values[1],
-        "gyroscope.z": gyro_values[2],
-        "temperature": temp_value
-    }
+        # Validate that the data_parts have exactly 8 elements
+        if len(data_parts) == 8:
+            device_id = data_parts[0]
+            timestamp = datetime.now().isoformat()
+            accel_values = [float(i) for i in data_parts[1:4]]
+            gyro_values = [float(i) for i in data_parts[4:7]]
+            temp_value = float(data_parts[7])
 
-    # Append the new sensor entry
-    sensordata.append(sensor_entry)
+            sensor_entry = {
+                "timestamp": timestamp,
+                "device_id": device_id,
+                "acceleration.x": accel_values[0],
+                "acceleration.y": accel_values[1],
+                "acceleration.z": accel_values[2],
+                "gyroscope.x": gyro_values[0],
+                "gyroscope.y": gyro_values[1],
+                "gyroscope.z": gyro_values[2],
+                "temperature": temp_value
+            }
 
-    # Maintain only the last 30 entries
-    if len(sensordata) > 30:
-        sensordata.pop(0)
+            # Append the new sensor entry
+            sensordata.append(sensor_entry)
 
-    # Overwrite the JSON file with the updated sensor data
-    with open('sensordata.json', 'w') as json_file:
-        json.dump(sensordata, json_file, indent=4)
+            # Maintain only the last 30 entries
+            if len(sensordata) > 30:
+                sensordata.pop(0)
+
+            # Overwrite the JSON file with the updated sensor data
+            with open('sensordata.json', 'w') as json_file:
+                json.dump(sensordata, json_file, indent=4)
+        else:
+            print("Invalid data format received: ", data_parts)
+    except Exception as e:
+        print("Error processing message: ", e)
 
 # Setup MQTT client
 client = mqtt.Client()
