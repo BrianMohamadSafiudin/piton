@@ -37,7 +37,7 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Message received-> " + msg.topic + " " + str(msg.payload))
-    data_str = msg.payload.decode('utf-8')
+    data_str = msg.payload.decode('utf-2')
     data_parts = data_str.split(',')
     device_id = data_parts[0]
     timestamp = datetime.now().isoformat()
