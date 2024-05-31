@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "falldetectionk4",
+  "private_key_id": "07f9faa580c19e4b111e3c59672f13ae86b1675e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCZgsE8Y0AEZiJV\nw36e3uLkXMxXS0yA4OeoRoFva32svFIADN+l9PjmvrJ1BpgLnt8au30V94HNWFID\n1gcRAOKAyCNlX0Kllhljpx5YmuHjpojcWdwAHFIISZzNLW0ZrNBmCBkyKvpjiCUl\njQDgKwQzwW4+DCPsncIpz+UTfIVRQm5QEVTfKhB1yizD6VnyWzLagNEZXPgHFic8\nrgSD7G++q2ZE6ymweEgICtnjNBe1qOI1SJ7jht8M1HYUkxRqcZd/c4bhBaOISmAM\nxjiCfXHElmV5q5uEXRrc8niU7INnw02NOhdssdmaoUka0BfNmamD/V9T3119n4Co\nTw2pXBT/AgMBAAECggEAIlqnOQbzHCjpNS1HaHFz8GwuFLkWuV7bqQaCT/eLy/zn\nEvjOkjrE+wqhMFxV6X/X6QkdYK2fwF8sF4ytzynWBsEDXtvXM+xn6SvMuEKNG9+4\nkCuR9vpfh1hF/YrVeCH7D2JvlREWMPEWcxVfpUsrKRP4Qm2AGqNhgO70EozS3xC4\nmKTkWhAT+64oW2E2BJVwLOiVK7L50UqfkhBIs9kMVNZIeoVTNnbZrRkI3dcFYeYM\nZGhfOlknrTIvAbaeiTbQ9vvXpxRSe8uJrAh6ECqCRRUc4WKRbWvaT7PtJY0sZL0Y\nlGBzCt5lY/8ZvSIA3VDtXIFJposvcjbikbJrhLA5aQKBgQDICJ0vSlycopp+G01m\nTzWx0HalnFvvZxXcOhd2nFwkn4j1gNTeJFtE/W4cbPYmDFs8mnpeJLZRSgaOs6ll\nsLjlP7zgD+Yqc42zjahAt/S8M/qbMfigG03Qnm+mYEnpYmOHD81VYdKgkPpgs+/E\n5ZfUGoVuNfuFkBFRcfTYH4xDFwKBgQDEdfHSLuuhghtErnbNExocPaGmRM5Rkoto\n462kbXadSHleSyWHbfNPXzhv4LNOSU2tPe7fmxqzeXq4PmuIYVwCKz4QKpZxgyfE\nma46zl9wSRBIpMuAIu4u21H+fRoHKIc1c0HG7tc5WFRTSCtM/gVvWLfVDW7cqPGa\nCK6mw+6OWQKBgDepDfPmwTZkmJCWkEbzq4E6/IjApWRMTuzkzTqX75vROI73tkPJ\n4gukaUtHloan0YtfgMVJeeHMs15p560AK7K+tZOzWNxfIwLfW/4GMfdcj1M36HLE\npjZyn6awDGEAm6ktYHltquo67TCTYRhsun6ukopEQyS7HdaH2xV4UdMpAoGALbP6\nc5jyu/nWeh3UCVUeR9+WkWWEUbmzsMz2gj/szh4kDemRa3YKmjZenLg7PkUTSvAT\nd/VPOt1RzTbIMUvk6aRBpeUiZnnKcJQH0ipcTXTR0vRzWvXFTyU6Z+eWfH/TJH4R\nmUPK0c5Yn580Y47cmNCcw3WCitbKjbjjWGxQPNECgYBiBhRe7u1beFtd3/s/R2R8\n1lgOLL3KpSIETIqqqnrweUtM+skrLeegbjh4SYWPM5yuEwQZIR04hTdrKZAi4kZN\nZ/kqMCgx23xwJ5ZAzZWYV+1Ei2z2lHY1qqvCpwbLH6sINc6BFuRttP0lxi0LKXZe\n1wJJ37tc0g6KI2/9e6ZEow==\n-----END PRIVATE KEY-----\n",
+  "client_email": "service-account-fall-detection@falldetectionk4.iam.gserviceaccount.com",
+  "client_id": "104704438062434994878",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/service-account-fall-detection%40falldetectionk4.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -2,11 +2,20 @@ import json
 import os
 import paho.mqtt.client as mqtt
 from datetime import datetime
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 # Configuration for MQTT
 broker_address = "34.101.62.111"
 port = 1883
 topic = "esp/mpu6050/sensors"
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate("falldetectionk4-07f9faa580c1.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+collection_name = 'sensordata'
+document_id = 'sensordataid'
 
 # Initialize or open data file
 if not os.path.exists('sensordata.json'):
@@ -71,6 +80,10 @@ def on_message(client, userdata, msg):
             # Overwrite the JSON file with the updated sensor data
             with open('sensordata.json', 'w') as json_file:
                 json.dump(sensordata, json_file, indent=4)
+            
+            # Save to Firestore with specific document ID
+            db.collection(collection_name).document(document_id).set(sensor_entry)
+
         else:
             print("Invalid data format received: ", data_parts)
     except Exception as e:
