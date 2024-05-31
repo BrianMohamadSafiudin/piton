@@ -11,10 +11,9 @@ port = 1883
 topic = "esp/mpu6050/sensors"
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("falldetectionk4-07f9faa580c1.json")
+cred = credentials.Certificate("falldetectionk4-07f9faa580c1.json") 
 firebase_admin.initialize_app(cred, {
-    'projectId': 'falldetectionk4',
-    'databaseURL': 'https://falldetectionk4.firebaseio.com'
+    'projectId': 'falldetectionk4'
 })
 db = firestore.client()
 collection_name = 'sensordata'
