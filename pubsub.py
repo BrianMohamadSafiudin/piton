@@ -2,6 +2,8 @@ import json
 import os
 import paho.mqtt.client as mqtt
 from datetime import datetime
+import firebase_admin
+from firebase_admin import credentials, db
 
 # Configuration for MQTT
 broker_address = "34.101.62.111"
@@ -29,6 +31,15 @@ def load_data():
 
 # Buffer for sensor data
 sensordata = load_data()
+
+# Firebase configuration
+cred = credentials.Certificate('falldetectionk4-07f9faa580c1.json')
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://falldetectionk4-default-rtdb.asia-southeast1.firebasedatabase.app/'
+})
+
+# Reference to the Firebase Realtime Database
+db_ref = db.reference('sensor_data')
 
 # MQTT callback functions
 def on_connect(client, userdata, flags, rc):
@@ -71,6 +82,10 @@ def on_message(client, userdata, msg):
             # Overwrite the JSON file with the updated sensor data
             with open('sensordata.json', 'w') as json_file:
                 json.dump(sensordata, json_file, indent=4)
+
+            # Push sensor data to Firebase Realtime Database
+            db_ref.push(sensor_entry)
+
         else:
             print("Invalid data format received: ", data_parts)
     except Exception as e:
