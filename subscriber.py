@@ -36,7 +36,7 @@ async def send_periodic_messages(app):
                 print(f"Mengirim pesan periodik ke {subscriber_id}")
                 await app.bot.send_message(subscriber_id, f"Hasil prediksi terbaru: {prediction}")
                 # Mengirim hasil prediksi ke Firebase
-                doc_ref = db.collection('predictions').document(subscriber_id)
+                doc_ref = db.collection('predictions').document(str(subscriber_id))
                 doc_ref.set({
                     'prediction': prediction
                 })
