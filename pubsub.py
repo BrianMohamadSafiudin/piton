@@ -45,16 +45,16 @@ def on_message(client, userdata, msg):
         if len(data_parts) == 8:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
-            accel_values = [float(i) for i in data_parts[1:4]]
+            # accel_values = [float(i) for i in data_parts[1:4]]
             gyro_values = [float(i) for i in data_parts[4:7]]
             temp_value = float(data_parts[7])
 
             sensor_entry = {
                 "timestamp": timestamp,
                 "device_id": device_id,
-                "acceleration.x": accel_values[0],
-                "acceleration.y": accel_values[1],
-                "acceleration.z": accel_values[2],
+                # "acceleration.x": accel_values[0],
+                # "acceleration.y": accel_values[1],
+                # "acceleration.z": accel_values[2],
                 "gyroscope.x": gyro_values[0],
                 "gyroscope.y": gyro_values[1],
                 "gyroscope.z": gyro_values[2],
