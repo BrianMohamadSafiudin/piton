@@ -54,9 +54,15 @@ def on_message(client, userdata, msg):
         if len(data_parts) == 8:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
-            accel_values = [float(i) for i in data_parts[1:4]]
-            gyro_values = [float(i) for i in data_parts[4:7]]
-            temp_value = float(data_parts[7])
+
+            try:
+                accel_values = [float(i) for i in data_parts[1:4]]
+                gyro_values = [float(i) for i in data_parts[4:7]]
+                temp_value = float(data_parts[7])
+            except ValueError as ve:
+                print(f"ValueError in converting data to float: {ve}")
+                print(f"Received data: {data_parts}")
+                return
 
             sensor_entry = {
                 "timestamp": timestamp,
@@ -85,13 +91,9 @@ def on_message(client, userdata, msg):
             db_ref.push(sensor_entry)
 
         else:
-            print("Invalid data format received: ", data_parts)
-    except ValueError as ve:
-        print("ValueError: ", ve)
-    except json.JSONDecodeError as je:
-        print("JSONDecodeError: ", je)
+            print(f"Invalid data format received: {data_parts}")
     except Exception as e:
-        print("Error processing message: ", e)
+        print(f"Error processing message: {e}")
 
 # Setup MQTT client
 client = mqtt.Client()
