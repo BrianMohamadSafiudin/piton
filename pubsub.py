@@ -56,6 +56,7 @@ def on_message(client, userdata, msg):
             timestamp = datetime.now().isoformat()
 
             try:
+                # Convert string parts to float
                 accel_values = [float(i) for i in data_parts[1:4]]
                 gyro_values = [float(i) for i in data_parts[4:7]]
                 temp_value = float(data_parts[7])
