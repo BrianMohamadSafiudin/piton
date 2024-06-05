@@ -10,16 +10,16 @@ def process_json(data_json):
     gyro_x = [float(item["gyroscope.x"]) for item in data]
     gyro_y = [float(item["gyroscope.y"]) for item in data]
     gyro_z = [float(item["gyroscope.z"]) for item in data]
-    accel_x = [float(item["acceleration.x"]) for item in data]
-    accel_y = [float(item["acceleration.y"]) for item in data]
-    accel_z = [float(item["acceleration.z"]) for item in data]
+    # accel_x = [float(item["acceleration.x"]) for item in data]
+    # accel_y = [float(item["acceleration.y"]) for item in data]
+    # accel_z = [float(item["acceleration.z"]) for item in data]
     
     # Gabungkan data gyroscope dan accelerometer menjadi satu array
-    combined_data = np.array([gyro_x, gyro_y, gyro_z, accel_x, accel_y, accel_z]).T
+    combined_data = np.array([gyro_x, gyro_y, gyro_z]).T
     return combined_data
 
 # Muat model AI yang telah dilatih menggunakan Keras tanpa optimizer
-model_path = 'fall-detection.h5'
+model_path = 'allnewfall-detect-model.h5'
 model = load_model(model_path, compile=False)
 
 # Label kelas sesuai dengan model
@@ -72,24 +72,24 @@ class_labels = [
 
 def predict_and_save():
     # Muat data JSON dari file
-    with open('resampled_sensordata.json', 'r') as f:
+    with open('sensordata.json', 'r') as f:
         data_json = f.read()
 
     # Proses JSON untuk mendapatkan data gyroscope dan accelerometer
     sensor_data = process_json(data_json)
 
     # Pastikan hanya melakukan prediksi jika ada tepat 600 objek
-    n_timesteps = 600
-    n_features = 6  # gyroscope x, y, z dan acceleration x, y, z
+    n_timesteps = 25
+    n_features = 3  # gyroscope x, y, z dan acceleration x, y, z
 
     if sensor_data.shape[0] < n_timesteps:
-        print(f'Data tidak cukup: hanya {sensor_data.shape[0]} objek, menunggu sampai ada 600 objek.')
+        print(f'Data tidak cukup: hanya {sensor_data.shape[0]} objek, menunggu sampai ada 25 objek.')
         return
     elif sensor_data.shape[0] > n_timesteps:
-        # Trim data jika lebih dari 600 titik
+        # Trim data jika lebih dari 25 titik
         sensor_data = sensor_data[:n_timesteps, :]
 
-    # Pertukarkan sumbu untuk menyesuaikan dengan bentuk input model (6, 600)
+    # Pertukarkan sumbu untuk menyesuaikan dengan bentuk input model (6, 25)
     sensor_data = np.swapaxes(sensor_data, 0, 1)
 
     # Ubah bentuk input sesuai dengan yang diharapkan oleh model

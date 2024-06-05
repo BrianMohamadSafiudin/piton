@@ -65,7 +65,7 @@ def on_message(client, userdata, msg):
             sensordata.append(sensor_entry)
 
             # Maintain only the last 30 entries
-            if len(sensordata) > 30:
+            if len(sensordata) > 25:
                 sensordata.pop(0)
 
             # Overwrite the JSON file with the updated sensor data
