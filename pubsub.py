@@ -42,7 +42,7 @@ def on_message(client, userdata, msg):
         data_parts = data_str.split(',')
 
         # Validate that the data_parts have exactly 8 elements
-        if len(data_parts) == 8:
+        if len(data_parts) == 5:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
             # accel_values = [float(i) for i in data_parts[1:4]]
