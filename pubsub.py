@@ -2,8 +2,6 @@ import json
 import os
 import paho.mqtt.client as mqtt
 from datetime import datetime
-import firebase_admin
-from firebase_admin import credentials, db
 
 # Configuration for MQTT
 broker_address = "34.101.62.111"
@@ -19,7 +17,9 @@ if not os.path.exists('sensordata.json'):
 def load_data():
     if os.path.exists('sensordata.json'):
         with open('sensordata.json', 'r') as json_file:
+            # Read the file contents
             data = json_file.read()
+            # If the file is not empty, load the JSON
             if data:
                 return json.loads(data)
             else:
@@ -29,15 +29,6 @@ def load_data():
 
 # Buffer for sensor data
 sensordata = load_data()
-
-# Firebase configuration
-cred = credentials.Certificate('falldetectionk4-07f9faa580c1.json')
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://falldetectionk4-default-rtdb.asia-southeast1.firebasedatabase.app/'
-})
-
-# Reference to the Firebase Realtime Database
-db_ref = db.reference('sensor_data')
 
 # MQTT callback functions
 def on_connect(client, userdata, flags, rc):
@@ -54,16 +45,9 @@ def on_message(client, userdata, msg):
         if len(data_parts) == 8:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
-
-            try:
-                # Convert string parts to float
-                accel_values = [float(i) for i in data_parts[1:4]]
-                gyro_values = [float(i) for i in data_parts[4:7]]
-                temp_value = float(data_parts[7])
-            except ValueError as ve:
-                print(f"ValueError in converting data to float: {ve}")
-                print(f"Received data: {data_parts}")
-                return
+            accel_values = [float(i) for i in data_parts[1:4]]
+            gyro_values = [float(i) for i in data_parts[4:7]]
+            temp_value = float(data_parts[7])
 
             sensor_entry = {
                 "timestamp": timestamp,
@@ -87,14 +71,10 @@ def on_message(client, userdata, msg):
             # Overwrite the JSON file with the updated sensor data
             with open('sensordata.json', 'w') as json_file:
                 json.dump(sensordata, json_file, indent=4)
-
-            # Push sensor data to Firebase Realtime Database
-            db_ref.push(sensor_entry)
-
         else:
-            print(f"Invalid data format received: {data_parts}")
+            print("Invalid data format received: ", data_parts)
     except Exception as e:
-        print(f"Error processing message: {e}")
+        print("Error processing message: ", e)
 
 # Setup MQTT client
 client = mqtt.Client()
