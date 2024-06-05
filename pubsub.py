@@ -19,9 +19,7 @@ if not os.path.exists('sensordata.json'):
 def load_data():
     if os.path.exists('sensordata.json'):
         with open('sensordata.json', 'r') as json_file:
-            # Read the file contents
             data = json_file.read()
-            # If the file is not empty, load the JSON
             if data:
                 return json.loads(data)
             else:
