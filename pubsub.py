@@ -86,6 +86,10 @@ def on_message(client, userdata, msg):
 
         else:
             print("Invalid data format received: ", data_parts)
+    except ValueError as ve:
+        print("ValueError: ", ve)
+    except json.JSONDecodeError as je:
+        print("JSONDecodeError: ", je)
     except Exception as e:
         print("Error processing message: ", e)
 
