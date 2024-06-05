@@ -41,16 +41,20 @@ def on_message(client, userdata, msg):
         data_str = msg.payload.decode('utf-8')
         data_parts = data_str.split(',')
 
-        # Validate that the data_parts have exactly 5 elements
-        if len(data_parts) == 5:
+        # Validate that the data_parts have exactly 8 elements
+        if len(data_parts) == 8:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
-            gyro_values = [float(i) for i in data_parts[1:4]]
-            temp_value = float(data_parts[4])
+            accel_values = [float(i) for i in data_parts[1:4]]
+            gyro_values = [float(i) for i in data_parts[4:7]]
+            temp_value = float(data_parts[7])
 
             sensor_entry = {
                 "timestamp": timestamp,
                 "device_id": device_id,
+                "acceleration.x": accel_values[0],
+                "acceleration.y": accel_values[1],
+                "acceleration.z": accel_values[2],
                 "gyroscope.x": gyro_values[0],
                 "gyroscope.y": gyro_values[1],
                 "gyroscope.z": gyro_values[2],
@@ -61,7 +65,7 @@ def on_message(client, userdata, msg):
             sensordata.append(sensor_entry)
 
             # Maintain only the last 30 entries
-            if len(sensordata) > 25:
+            if len(sensordata) > 30:
                 sensordata.pop(0)
 
             # Overwrite the JSON file with the updated sensor data
