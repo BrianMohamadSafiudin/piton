@@ -37,7 +37,7 @@ async def send_periodic_messages(app):
         elif subscribers:  # Only send messages if there are subscribers
             for subscriber_id in subscribers:
                 print(f"Sending periodic message to {subscriber_id}")
-                await app.bot.send_message(subscriber_id, f"Prediction result: {prediction}")
+                await app.bot.send_message(subscriber_id, f"Darurat!! Hasil prediksi: {prediction}")
                 # Send prediction result to Firebase
                 doc_ref = db.collection('predictions').document(str(subscriber_id))
                 doc_ref.set({
