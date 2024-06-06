@@ -19,7 +19,7 @@ def process_json(data_json):
     return combined_data
 
 # Muat model AI yang telah dilatih menggunakan Keras tanpa optimizer
-model_path = 'allnewfall-detect-model.h5'
+model_path = 'allnewfall-detection-model.h5'
 model = load_model(model_path, compile=False)
 
 # Label kelas sesuai dengan model
