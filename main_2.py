@@ -35,6 +35,7 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await app.bot.send_message(subscriber_id, f"Status saat ini: {prediction}")
     else:
         print("Anda Belum Subscribe!!!")
+        await update.message.reply_text('Anda Belum Subscribe!!!')
 
 async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("Menambahkan pengguna ke daftar pelanggan...")
