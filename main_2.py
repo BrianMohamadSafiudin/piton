@@ -32,7 +32,7 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if subscribers:  # Only send messages if there are subscribers
         for subscriber_id in subscribers:
             print(f"Sending periodic message to {subscriber_id}")
-            await update.message.reply_text(subscriber_id, f"Status saat ini: {prediction}")
+            await app.bot.send_message(subscriber_id, f"Status saat ini: {prediction}")
     else:
         print("Anda Belum Subscribe!!!")
 
