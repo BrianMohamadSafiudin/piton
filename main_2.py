@@ -13,7 +13,22 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Halo! Saya bot dari alat deteksi jatuh!')
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Ada yang bisa saya bantu?')
+    await update.message.reply_text('Status pengguna saat ini')
+    subscribers = load_subscribers()
+    prediction = load_prediction()
+    print("Checking the list of subscribed customers...")
+
+    if subscribers:  # Only send messages if there are subscribers
+        for subscriber_id in subscribers:
+            print(f"Sending periodic message to {subscriber_id}")
+            await app.bot.send_message(subscriber_id, f"Latest prediction result: {prediction}")
+            # Send prediction result to Firebase
+            doc_ref = db.collection('predictions').document(str(subscriber_id))
+            doc_ref.set({
+                'prediction': prediction
+            })
+    else:
+        print("Anda Belum Subscribe!!!")
 
 async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("Menambahkan pengguna ke daftar pelanggan...")

@@ -31,7 +31,10 @@ async def send_periodic_messages(app):
         prediction = load_prediction()
         print("Checking the list of subscribed customers...")
 
-        if subscribers:  # Only send messages if there are subscribers
+        # Check if the prediction is "Stand for 30 seconds (D01/01)" or "Walk normally and turn for 4m (D06/06)"
+        if prediction in ["Stand for 30 seconds (D01/01)", "Walk normally and turn for 4m (D06/06)"]:
+            print(f"Prediction result is '{prediction}'. Skipping message sending.")
+        elif subscribers:  # Only send messages if there are subscribers
             for subscriber_id in subscribers:
                 print(f"Sending periodic message to {subscriber_id}")
                 await app.bot.send_message(subscriber_id, f"Latest prediction result: {prediction}")
