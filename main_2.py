@@ -6,6 +6,18 @@ from telegram.ext import CommandHandler, MessageHandler, Application, filters, C
 TOKEN: Final = "6652548059:AAHMjQxSifta_RDNP99XZe3TxOHOFh0gGwA"
 BOT_USERNAME: Final = "@FallDetectionMonitorBot"
 
+# Function to read subscriber data from JSON file
+def load_subscribers():
+    with open('subscribers.json', 'r') as file:
+        data = json.load(file)
+    return data
+
+# Function to read prediction data from JSON file
+def load_prediction():
+    with open('hasilprediksi.json', 'r') as file:
+        data = json.load(file)
+    return data['prediction']
+
 # Membuat variabel untuk menyimpan daftar pengguna yang berlangganan
 subscribers = set()
 
@@ -13,7 +25,6 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Halo! Saya bot dari alat deteksi jatuh!')
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Status pengguna saat ini')
     subscribers = load_subscribers()
     prediction = load_prediction()
     print("Checking the list of subscribed customers...")
@@ -21,12 +32,7 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if subscribers:  # Only send messages if there are subscribers
         for subscriber_id in subscribers:
             print(f"Sending periodic message to {subscriber_id}")
-            await app.bot.send_message(subscriber_id, f"Latest prediction result: {prediction}")
-            # Send prediction result to Firebase
-            doc_ref = db.collection('predictions').document(str(subscriber_id))
-            doc_ref.set({
-                'prediction': prediction
-            })
+            await update.message.reply_text(subscriber_id, f"Current status: {prediction}")
     else:
         print("Anda Belum Subscribe!!!")
 
