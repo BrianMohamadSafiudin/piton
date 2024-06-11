@@ -25,7 +25,7 @@ model = load_model(model_path, compile=False)
 # Label kelas sesuai dengan model
 class_labels = [
     "Stand for 30 seconds (D01/01)",
-    "Walk normally and turn for 4m (D06/06)",
+    "Stand normally and walk (D06/06)",
     "Forward fall when trying to sit down (F01/20)",
     "Backward fall when trying to sit down (F02/21)",
     "Lateral fall when trying to sit down (F03/22)"
