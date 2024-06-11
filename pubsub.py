@@ -47,15 +47,22 @@ def on_message(client, userdata, msg):
     print("Message received-> " + msg.topic + " " + str(msg.payload))
     try:
         data_str = msg.payload.decode('utf-8')
+        print(f"Decoded data string: {data_str}")  # Debugging line
         data_parts = data_str.split(',')
+        print(f"Split data parts: {data_parts}")  # Debugging line
 
         # Validate that the data_parts have exactly 8 elements
         if len(data_parts) == 8:
             device_id = data_parts[0]
             timestamp = datetime.now().isoformat()
-            accel_values = [float(i) for i in data_parts[1:4]]
-            gyro_values = [float(i) for i in data_parts[4:7]]
-            temp_value = float(data_parts[7])
+            try:
+                accel_values = [float(i) for i in data_parts[1:4]]
+                gyro_values = [float(i) for i in data_parts[4:7]]
+                temp_value = float(data_parts[7])
+            except ValueError as e:
+                print(f"Error converting data parts to float: {e}")
+                print(f"Data parts: {data_parts}")
+                return
 
             sensor_entry = {
                 "timestamp": timestamp,
@@ -68,6 +75,8 @@ def on_message(client, userdata, msg):
                 "gyroscope.z": gyro_values[2],
                 "temperature": temp_value
             }
+
+            print(f"Formatted sensor entry: {sensor_entry}")  # Debugging line
 
             # Append the new sensor entry
             sensordata.append(sensor_entry)
@@ -82,11 +91,16 @@ def on_message(client, userdata, msg):
 
             # Push data to Firebase Realtime Database
             ref = db.reference(f'/sensors/{device_id}')
-            ref.push(sensor_entry)
+            result = ref.push(sensor_entry)
+            print(f"Data pushed to Firebase with result: {result}")  # Debugging line
         else:
             print("Invalid data format received: ", data_parts)
+    except ValueError as e:
+        print("Error parsing data: ", e)
+        print("Received data string: ", data_str)
     except Exception as e:
         print("Error processing message: ", e)
+        print("Received data string: ", data_str)
 
 # Setup MQTT client
 client = mqtt.Client()
