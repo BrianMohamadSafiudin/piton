@@ -67,12 +67,16 @@ def on_message(client, userdata, msg):
             sensor_entry = {
                 "timestamp": timestamp,
                 "device_id": device_id,
-                "acceleration.x": accel_values[0],
-                "acceleration.y": accel_values[1],
-                "acceleration.z": accel_values[2],
-                "gyroscope.x": gyro_values[0],
-                "gyroscope.y": gyro_values[1],
-                "gyroscope.z": gyro_values[2],
+                "acceleration": {
+                    "x": accel_values[0],
+                    "y": accel_values[1],
+                    "z": accel_values[2]
+                },
+                "gyroscope": {
+                    "x": gyro_values[0],
+                    "y": gyro_values[1],
+                    "z": gyro_values[2]
+                },
                 "temperature": temp_value
             }
 
@@ -96,7 +100,7 @@ def on_message(client, userdata, msg):
                 print(f"Data pushed to Firebase with result: {result}")  # Debugging line
             except Exception as e:
                 print(f"Error pushing data to Firebase: {e}")
-                print(f"Sensor entry: {sensor_entry}")
+                print(f"Sensor entry: {json.dumps(sensor_entry, indent=4)}")
         else:
             print("Invalid data format received: ", data_parts)
     except ValueError as e:
