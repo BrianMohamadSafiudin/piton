@@ -90,9 +90,13 @@ def on_message(client, userdata, msg):
                 json.dump(sensordata, json_file, indent=4)
 
             # Push data to Firebase Realtime Database
-            ref = db.reference(f'/sensors/{device_id}')
-            result = ref.push(sensor_entry)
-            print(f"Data pushed to Firebase with result: {result}")  # Debugging line
+            try:
+                ref = db.reference(f'/sensors/{device_id}')
+                result = ref.push(sensor_entry)
+                print(f"Data pushed to Firebase with result: {result}")  # Debugging line
+            except Exception as e:
+                print(f"Error pushing data to Firebase: {e}")
+                print(f"Sensor entry: {sensor_entry}")
         else:
             print("Invalid data format received: ", data_parts)
     except ValueError as e:
