@@ -7,9 +7,9 @@ import time
 # Fungsi untuk memproses JSON menjadi array fitur
 def process_json(data_json):
     data = json.loads(data_json)
-    gyro_x = [float(item["gyroscope.x"]) for item in data]
-    gyro_y = [float(item["gyroscope.y"]) for item in data]
-    gyro_z = [float(item["gyroscope.z"]) for item in data]
+    gyro_x = [float(item["gyroscopex"]) for item in data]
+    gyro_y = [float(item["gyroscopey"]) for item in data]
+    gyro_z = [float(item["gyroscopez"]) for item in data]
     # accel_x = [float(item["acceleration.x"]) for item in data]
     # accel_y = [float(item["acceleration.y"]) for item in data]
     # accel_z = [float(item["acceleration.z"]) for item in data]

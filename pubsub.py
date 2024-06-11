@@ -35,19 +35,6 @@ def load_data():
     else:
         return []
 
-# Function to convert dotted keys to nested dictionary
-def convert_to_nested_dict(dotted_dict):
-    nested_dict = {}
-    for key, value in dotted_dict.items():
-        keys = key.split('.')
-        d = nested_dict
-        for k in keys[:-1]:
-            if k not in d:
-                d[k] = {}
-            d = d[k]
-        d[keys[-1]] = value
-    return nested_dict
-
 # Buffer for sensor data
 sensordata = load_data()
 
@@ -80,23 +67,19 @@ def on_message(client, userdata, msg):
             sensor_entry = {
                 "timestamp": timestamp,
                 "device_id": device_id,
-                "acceleration.x": accel_values[0],
-                "acceleration.y": accel_values[1],
-                "acceleration.z": accel_values[2],
-                "gyroscope.x": gyro_values[0],
-                "gyroscope.y": gyro_values[1],
-                "gyroscope.z": gyro_values[2],
+                "accelerationx": accel_values[0],
+                "accelerationy": accel_values[1],
+                "accelerationz": accel_values[2],
+                "gyroscopex": gyro_values[0],
+                "gyroscopey": gyro_values[1],
+                "gyroscopez": gyro_values[2],
                 "temperature": temp_value
             }
 
             print(f"Formatted sensor entry: {json.dumps(sensor_entry, indent=4)}")  # Debugging line
 
-            # Convert to nested dict
-            nested_sensor_entry = convert_to_nested_dict(sensor_entry)
-            print(f"Nested sensor entry: {json.dumps(nested_sensor_entry, indent=4)}")  # Debugging line
-
             # Append the new sensor entry
-            sensordata.append(nested_sensor_entry)
+            sensordata.append(sensor_entry)
 
             # Maintain only the last 30 entries
             if len(sensordata) > 25:
@@ -109,11 +92,11 @@ def on_message(client, userdata, msg):
             # Push data to Firebase Realtime Database
             try:
                 ref = db.reference(f'/sensors/{device_id}')
-                result = ref.push(nested_sensor_entry)
+                result = ref.push(sensor_entry)
                 print(f"Data pushed to Firebase with result: {result}")  # Debugging line
             except Exception as e:
                 print(f"Error pushing data to Firebase: {e}")
-                print(f"Sensor entry: {json.dumps(nested_sensor_entry, indent=4)}")
+                print(f"Sensor entry: {json.dumps(sensor_entry, indent=4)}")
         else:
             print("Invalid data format received: ", data_parts)
     except ValueError as e:
