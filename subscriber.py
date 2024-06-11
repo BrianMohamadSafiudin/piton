@@ -32,8 +32,14 @@ async def send_periodic_messages(app):
         print("Checking the list of subscribed customers...")
 
         # Check if the prediction is "Stand for 30 seconds (D01/01)" or "Walk normally and turn for 4m (D06/06)"
-        if prediction in ["Stand for 30 seconds (D01/01)", "Walk normally and turn for 4m (D06/06)"]:
-            print(f"Prediction result is '{prediction}'. Skipping message sending.")
+        if prediction in ["Stand for 30 seconds (D01/01)", "Stand normally and walk (D06/06)"]:
+            for subscriber_id in subscribers:
+                # Send prediction result to Firebase
+                doc_ref = db.collection('predictions').document(str(subscriber_id))
+                doc_ref.set({
+                    'prediction': prediction
+                })           
+                print(f"Prediction result is '{prediction}'. Skipping message sending.")
         elif subscribers:  # Only send messages if there are subscribers
             for subscriber_id in subscribers:
                 print(f"Sending periodic message to {subscriber_id}")
@@ -46,7 +52,7 @@ async def send_periodic_messages(app):
         else:
             print("No subscribed customers.")
 
-        await asyncio.sleep(6)
+        await asyncio.sleep(3)
 
 if __name__ == '__main__':
     print('Starting bot...')
