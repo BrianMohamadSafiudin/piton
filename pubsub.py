@@ -76,7 +76,7 @@ def on_message(client, userdata, msg):
                 "temperature": temp_value
             }
 
-            print(f"Formatted sensor entry: {sensor_entry}")  # Debugging line
+            print(f"Formatted sensor entry: {json.dumps(sensor_entry, indent=4)}")  # Debugging line
 
             # Append the new sensor entry
             sensordata.append(sensor_entry)
