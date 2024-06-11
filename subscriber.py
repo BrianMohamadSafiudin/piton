@@ -11,7 +11,7 @@ port = 1883
 topic = "esp/mpu6050/sensors"
 
 # Firebase configuration
-cred = credentials.Certificate("path/to/your/serviceAccountKey.json")  # Ganti dengan path ke file kredensial layanan Anda
+cred = credentials.Certificate("falldetectionk4-07f9faa580c1.json")  # Ganti dengan path ke file kredensial layanan Anda
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://falldetectionk4-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })
@@ -87,8 +87,10 @@ def on_message(client, userdata, msg):
             print("Invalid data format received: ", data_parts)
     except ValueError as e:
         print("Error parsing data: ", e)
+        print("Received data string: ", data_str)
     except Exception as e:
         print("Error processing message: ", e)
+        print("Received data string: ", data_str)
 
 # Setup MQTT client
 client = mqtt.Client()
