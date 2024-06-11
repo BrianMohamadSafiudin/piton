@@ -47,9 +47,9 @@ def on_message(client, userdata, msg):
     print("Message received-> " + msg.topic + " " + str(msg.payload))
     try:
         data_str = msg.payload.decode('utf-8')
-        print(f"Decoded data string: {data_str}")  # Debugging line
+        # print(f"Decoded data string: {data_str}")  # Debugging line
         data_parts = data_str.split(',')
-        print(f"Split data parts: {data_parts}")  # Debugging line
+        # print(f"Split data parts: {data_parts}")  # Debugging line
 
         # Validate that the data_parts have exactly 8 elements
         if len(data_parts) == 8:
@@ -76,7 +76,7 @@ def on_message(client, userdata, msg):
                 "temperature": temp_value
             }
 
-            print(f"Formatted sensor entry: {json.dumps(sensor_entry, indent=4)}")  # Debugging line
+            # print(f"Formatted sensor entry: {json.dumps(sensor_entry, indent=4)}")  # Debugging line
 
             # Append the new sensor entry
             sensordata.append(sensor_entry)
