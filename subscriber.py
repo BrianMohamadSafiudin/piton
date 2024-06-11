@@ -91,7 +91,8 @@ def on_message(client, userdata, msg):
 
             # Push data to Firebase Realtime Database
             ref = db.reference(f'/sensors/{device_id}')
-            ref.push(sensor_entry)
+            result = ref.push(sensor_entry)
+            print(f"Data pushed to Firebase with result: {result}")  # Debugging line
         else:
             print("Invalid data format received: ", data_parts)
     except ValueError as e:
